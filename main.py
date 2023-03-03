@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 import os
 from Ghost import gimme_string
 import shutil
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from gpt_vetha import answer
 import plotly.graph_objs as go
-load_dotenv()
+#load_dotenv()
 import os
 from supabase import create_client
 url ="https://hzmzxhzqslaoahheatdf.supabase.co"
@@ -49,7 +49,7 @@ global global_dict
 file_name=''
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
-app.config['UPLOAD_FOLDER'] = 'static/files'
+app.config['UPLOAD_FOLDER'] = os.getcwd()
 app.secret_key='a'
 
 class UploadFileForm(FlaskForm):
@@ -187,8 +187,8 @@ def upload():
         form.Author_Name.data = ' '
         file = form.file.data
         current_filename = file.filename
-        file.save("static/files/"+file.filename)
-        supabase.storage().from_("vetha").upload(file.filename,"static/files/"+file.filename)
+        file.save(os.getcwd()+file.filename)
+        supabase.storage().from_("vetha").upload(file.filename,os.getcwd()+file.filename)
         url = supabase.storage().from_("vetha").get_public_url(file.filename)
         print(url)
         # exit()
@@ -260,6 +260,5 @@ def plaigarism():
         print(copied_links)
         return render_template("plaigarism.html",view=view,data = copied_links,form=form,textarea=textarea)
     return render_template("plaigarism.html",form=form,view=view,textarea=textarea)
-
 
 app.run(debug=True, port=os.getenv("PORT", default=5000))
